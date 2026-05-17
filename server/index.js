@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-app.use('/api/chat', chatRoute);
+app.use('*', chatRoute);
 
 const PORT = process.env.PORT || 3001;
 
