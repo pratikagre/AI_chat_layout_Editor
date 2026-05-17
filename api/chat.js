@@ -39,6 +39,23 @@ export default async function handler(req, res) {
     const llmResponse = await callLLM(systemPrompt, history || [], message);
     
     let updatedLayout = llmResponse.updatedLayout || layout;
+    
+    // Safety fallback: if LLM returned a string, parse it
+    if (typeof updatedLayout === 'string') {
+      try {
+        updatedLayout = JSON.parse(updatedLayout);
+      } catch (e) {
+        console.error("Could not parse updatedLayout string");
+      }
+    }
+
+    // Safety fallback: if LLM stripped rootNodes or imageUrl, restore them
+    if (updatedLayout && typeof updatedLayout === 'object') {
+      if (!updatedLayout.rootNodes) updatedLayout.rootNodes = layout.rootNodes;
+      if (!updatedLayout.imageUrl) updatedLayout.imageUrl = layout.imageUrl;
+      if (!updatedLayout.nodes) updatedLayout.nodes = layout.nodes;
+    }
+
     validateLayout(updatedLayout);
 
     return res.status(200).json({
