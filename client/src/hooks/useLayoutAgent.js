@@ -31,7 +31,11 @@ export function useLayoutAgent() {
       ]);
     } catch (err) {
       console.error(err);
-      const errorMsg = err.response?.data?.error || err.message || 'Unknown error';
+      let errorMsg = err.response?.data?.error || err.message || 'Unknown error';
+      if (typeof errorMsg === 'object') {
+        errorMsg = JSON.stringify(errorMsg);
+      }
+      
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: `Sorry, something went wrong: ${errorMsg}` }
