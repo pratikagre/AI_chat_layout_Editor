@@ -31,7 +31,7 @@ export function useLayoutAgent() {
       ]);
     } catch (err) {
       console.error(err);
-      let errorMsg = err.response?.data?.error || err.message || 'Unknown error';
+      let errorMsg = err.response?.data?.details || err.response?.data?.error || err.message || 'Unknown error';
       if (typeof errorMsg === 'object') {
         errorMsg = JSON.stringify(errorMsg);
       }
